@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>RotateElements</title>
+</head>
+<body>
+    <script>
+        // Generate random number in the interval [downLimit, upperLimit]
+        function generateNumber(downLimit, upperLimit) {
+            var number = 0;
+            if (downLimit === 0) {
+                number = Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+            else if (downLimit === 1) {
+                number = Math.floor((Math.random() * parseInt(upperLimit)) + 1);
+            }
+            else {
+                number = downLimit + Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+
+            return number;
+        }
+
+        // Generate random color in format RGB
+        function generateColor() {
+            var randomRed = generateNumber(0, 255);
+            var randomGreen = generateNumber(0, 255);
+            var randomBlue = generateNumber(0, 255);
+            var color = 'rgb(' + randomRed + ',' + randomGreen + ',' + randomBlue + ')';
+
+            return color;
+        }
+
+        // Generate element (div) and set its style properties
+        function generateElement() {
+            var element = document.createElement('div');
+
+            element.style.backgroundColor = generateColor();
+            element.style.width = generateNumber(10, 20) + 'px';
+            element.style.height = generateNumber(10, 20) + 'px';
+            element.style.borderRadius = generateNumber(1, 100) + '%';
+            element.style.position = 'absolute';
+            element.style.top = generateNumber(1, 100) + '%';
+            element.style.left = generateNumber(1, 100) + '%';
+
+            return element;
+        }
+
+        // Define object Circle and set its properties
+        function Circle(ordinate, abscissa, radius) {
+            this.ordinate = ordinate;
+            this.abscissa = abscissa;
+            this.radius = radius;
+            this.circle = document.createElement('div');
+
+            this.circle.style.width = (2 * radius) + 'px';
+            this.circle.style.height = (2 * radius) + 'px';
+            this.circle.style.position = 'absolute';
+            this.circle.style.top = (ordinate - radius) + 'px';
+            this.circle.style.left = (abscissa - radius) + 'px';
+        }
+
+        // Add function drawAtDegrees to Circle - change the position of the element to point from the circle
+        Circle.prototype.drawAtDegrees = function (element, degrees) {
+            var abscissa = this.abscissa + this.radius * Math.cos(degrees * Math.PI / 180)
+            var ordinate = this.ordinate + this.radius * Math.sin(degrees * Math.PI / 180);
+
+            element.style.left = abscissa - parseInt(element.style.width, 10) / 2 + 'px';
+            element.style.top = ordinate - parseInt(element.style.height, 10) / 2 + 'px';
+        }
+
+        // Create object of type Circle and append it to a fragment
+        var fragment = document.createDocumentFragment();
+        var divList = [];
+        var divCount = 5;
+        var circle = new Circle(200, 200, 100);
+        fragment.appendChild(circle.circle);
+
+        // Create elements(divs) and set their position by using setAttribute('data-degrees', degrees) and drawAtDegrees function
+        for (var count = 0; count < divCount; count++) {
+            var div = generateElement();
+            fragment.appendChild(div);
+            divList.push(div);
+            var degrees = count * 360 / divCount;
+            div.setAttribute('data-degrees', degrees);
+            circle.drawAtDegrees(div, degrees);
+        }
+
+        document.body.appendChild(fragment);
+        
+        // Rotate the element in 100 milliseconds by changing 'data-degrees' attribute of each element (div)
+        setInterval(function () {
+            for (var count = 0; count < divCount; count++) {
+                div = divList[count];
+                degrees = (parseFloat(div.getAttribute('data-degrees')) + 1) % 360;
+                div.setAttribute('data-degrees', degrees);
+                circle.drawAtDegrees(div, degrees);
+            }
+        }, 100);
+   </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TagCloud</title>
+</head>
+<body>
+    <script>
+        // Generate random number in the interval [downLimit, upperLimit]
+        function generateNumber(downLimit, upperLimit) {
+            var number = 0;
+            if (downLimit === 0) {
+                number = Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+            else if (downLimit === 1) {
+                number = Math.floor((Math.random() * parseInt(upperLimit)) + 1);
+            }
+            else {
+                number = downLimit + Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+
+            return number;
+        }
+
+        // Generate random color in format RGB
+        function generateColor() {
+            var randomRed = generateNumber(0, 255);
+            var randomGreen = generateNumber(0, 255);
+            var randomBlue = generateNumber(0, 255);
+            var color = 'rgb(' + randomRed + ',' + randomGreen + ',' + randomBlue + ')';
+
+            return color;
+        }
+
+        // Find number different tags and their frequency
+        var tags = ["cms", "javascript", "js", "ASP.NET MVC", ".net", ".net", "css", "wordpress",
+            "xaml", "js", "http", "web", "asp.net", "asp.net MVC", "ASP.NET MVC", "wp", "javascript",
+            "js", "cms", "html", "javascript", "http", "http", "CMS"]
+        var differentTags = [];
+        var tagFrequency = [];
+        for (var count = 0; count < tags.length; count++) {
+            for (var position = 0; position < differentTags.length; position++) {
+                if (tags[count].toLowerCase() === differentTags[position]) {
+                    tagFrequency[position]++;
+                    break;
+                }
+            }
+            if (position === differentTags.length) {
+                differentTags.push(tags[count].toLowerCase());
+                tagFrequency.push(1);
+            }
+        }
+
+        // Find maxFrequency
+        var maxWidth = Math.floor(screen.width / 2);
+        var maxHeight = Math.floor(screen.height / 2);
+        var minSize = 17;
+        var maxSize = 42;
+        var sizeDifference = maxSize - minSize;
+        var maxFrequency = -Number.MAX_VALUE;
+        for (var count = 0; count < tagFrequency.length; count++) {
+            if (tagFrequency[count] > maxFrequency) {
+                maxFrequency = tagFrequency[count];
+            }
+        }
+
+        // Create and append spans for each different tag and set its size according to its frequency
+        for (var count = 0; count < differentTags.length; count++) {
+            var span = document.createElement('span');
+            span.innerHTML = differentTags[count];
+
+            var spanSize = Math.floor(minSize + (tagFrequency[count] / maxFrequency) * sizeDifference);
+            span.style.fontSize = spanSize + 'px';
+            span.style.color = generateColor();
+            span.style.position = 'absolute';
+            span.style.top = generateNumber(0, Math.floor(screen.height / 2)) + 'px';
+            span.style.left = generateNumber(0, Math.floor(screen.width / 2)) + 'px';
+
+            document.body.appendChild(span);
+        }
+    </script>
+</body>
+</html>

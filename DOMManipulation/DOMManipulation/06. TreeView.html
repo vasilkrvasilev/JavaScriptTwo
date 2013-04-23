@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <script>
+        // Generate random number in the interval [downLimit, upperLimit]
+        function generateNumber(downLimit, upperLimit) {
+            var number = 0;
+            if (downLimit === 0) {
+                number = Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+            else if (downLimit === 1) {
+                number = Math.floor((Math.random() * parseInt(upperLimit)) + 1);
+            }
+            else {
+                number = downLimit + Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+
+            return number;
+        }
+
+        // Generate random color in format RGB
+        function generateColor() {
+            var randomRed = generateNumber(0, 255);
+            var randomGreen = generateNumber(0, 255);
+            var randomBlue = generateNumber(0, 255);
+            var color = 'rgb(' + randomRed + ',' + randomGreen + ',' + randomBlue + ')';
+
+            return color;
+        }
+
+        // Show and hide sub list
+        function revealSubList(event) {
+            // Check if the element has child ul
+            if (typeof this.getElementsByTagName('ul')[0] == 'undefined') {
+                return;
+            }
+
+            // Change the property style.display to show or hide sub list 
+            // Use this === event.target, because if we click on one li item the event will affect the parent as well
+            if (this === event.target && this.getElementsByTagName('ul')[0].style.display == 'block') {
+                this.getElementsByTagName('ul')[0].style.display = 'none';
+            } else {
+                this.getElementsByTagName('ul')[0].style.display = 'block';
+            }
+        }
+
+        // Generate list of particular number of elements
+        function generateList(name, elements) {
+            var list = document.createElement('ul');
+            for (var count = 0; count < elements; count++) {
+                var item = document.createElement('li');
+                item.innerHTML = name + ' item ' + count;
+
+                // addEventListener for click to execute function revealSubList
+                item.addEventListener('click', revealSubList);
+                list.appendChild(item);
+            }
+
+            return list;
+        }
+
+        var upperLimit = 10;
+
+        // Generate list of random number of elements (main)
+        var mainListLength = generateNumber(1, upperLimit);
+        var mainList = generateList(' ', mainListLength);
+        var mainChildNodes = mainList.childNodes;
+
+        // Generate list of random number of elements (sub)
+        var subListLength = generateNumber(1, upperLimit);
+        var subList = generateList('sub', generateNumber(1, upperLimit));        
+        var subChildNodes = subList.childNodes;
+
+        // Generate list of random number of elements (sub sub)
+        var subSubList = generateList('sub sub', generateNumber(1, upperLimit));
+
+        // Append last two lists to random element
+        subChildNodes[generateNumber(0, subListLength - 1)].appendChild(subSubList);
+        mainChildNodes[generateNumber(0, mainListLength - 1)].appendChild(subList);
+        document.body.appendChild(mainList);
+
+    </script>
+</body>
+</html>

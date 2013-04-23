@@ -1,0 +1,5 @@
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\DOMManipulation\DOMManipulation\bin\DOMManipulation.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\DOMManipulation\DOMManipulation\bin\DOMManipulation.pdb
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\DOMManipulation\DOMManipulation\obj\Debug\DOMManipulation.csprojResolveAssemblyReference.cache
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\DOMManipulation\DOMManipulation\obj\Debug\DOMManipulation.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\DOMManipulation\DOMManipulation\obj\Debug\DOMManipulation.pdb
