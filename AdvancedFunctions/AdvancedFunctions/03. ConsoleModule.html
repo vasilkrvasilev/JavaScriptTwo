@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ConsoleModule</title>
+</head>
+<body>
+    <script>
+        // Create object specialConsole
+        var specialConsole = (function () {
+
+            // specialConsole.writeLine logs on the console an formatted or non-formatted message
+            function writeLine() {
+                var template = arguments[0];
+                var length = arguments.length;
+
+                for (var count = 1; count < length; count++) {
+                    var different = true;
+                    while (different == true) {
+                        var changedTemplate = template.replace("{" + (count - 1) + "}", arguments[count]);
+                        if (template == changedTemplate) {
+                            different = false;
+                        }
+
+                        template = changedTemplate;
+                    }
+                }
+
+                console.log(template);
+            }
+
+            // specialConsole.writeError logs on the console an formatted or non-formatted error
+            function writeError() {
+                var template = arguments[0];
+                var length = arguments.length;
+
+                for (var count = 1; count < length; count++) {
+                    var different = true;
+                    while (different == true) {
+                        var changedTemplate = template.replace("{" + (count - 1) + "}", arguments[count]);
+                        if (template == changedTemplate) {
+                            different = false;
+                        }
+
+                        template = changedTemplate;
+                    }
+                }
+
+                console.log(template);
+            }
+
+            // specialConsole.writeWarning logs on the console an formatted or non-formatted warning
+            function writeWarning() {
+                var template = arguments[0];
+                var length = arguments.length;
+
+                for (var count = 1; count < length; count++) {
+                    var different = true;
+                    while (different == true) {
+                        var changedTemplate = template.replace("{" + (count - 1) + "}", arguments[count]);
+                        if (template == changedTemplate) {
+                            different = false;
+                        }
+
+                        template = changedTemplate;
+                    }
+                }
+
+                console.log(template);
+            }
+
+            // specialConsole.writeToString logs on the console toString representation of an input element
+            function writeToString(input) {
+                console.log(input.toString());
+            }
+
+            // Module
+            return {
+                writeLine: writeLine,
+                writeError: writeError,
+                writeWarning: writeWarning,
+                writeToString: writeToString
+            };
+        })();
+    </script>
+</body>
+</html>

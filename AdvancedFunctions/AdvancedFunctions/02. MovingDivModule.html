@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>MovingDivModule</title>
+</head>
+<body>
+	<a href="#" id="start" onclick="onStartButtonClick()">Generate</a>
+    <a href="#" id="A1" onclick="onAccelerateButtonClick()">Accelerate</a>
+    <script>
+        // Create objects of type Circle and type Rectangle
+        var circle = new Circle(100, 100, 75);
+        var circleDiv = [];
+        var rectangle = new Rectangle(25, 200, 100, 50);
+        var rectangleDiv = [];
+        var elementWidth = '10px';
+        var elementHeight = '10px';
+
+        // Generate random number in the interval [downLimit, upperLimit]
+        function generateNumber(downLimit, upperLimit) {
+            var number = 0;
+            if (downLimit === 0) {
+                number = Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+            else if (downLimit === 1) {
+                number = Math.floor((Math.random() * parseInt(upperLimit)) + 1);
+            }
+            else {
+                number = downLimit + Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+
+            return number;
+        }
+
+        // Generate random color in format RGB
+        function generateColor() {
+            var randomRed = generateNumber(0, 255);
+            var randomGreen = generateNumber(0, 255);
+            var randomBlue = generateNumber(0, 255);
+            var color = 'rgb(' + randomRed + ',' + randomGreen + ',' + randomBlue + ')';
+
+            return color;
+        }
+
+        // Generate element (shape) and set its style properties
+        function generateElement() {
+            var element = document.createElement('div');
+
+            element.style.backgroundColor = generateColor();
+            element.style.color = generateColor();
+            element.style.borderColor = generateColor();
+            element.style.width = elementWidth;
+            element.style.height = elementHeight;
+            element.style.borderRadius = generateNumber(1, 100) + '%';
+            element.style.position = 'absolute';
+            element.style.top = 0;
+            element.style.left = 0;
+
+            return element;
+        }
+
+        // Define object Circle and set its properties
+        function Circle(ordinate, abscissa, radius) {
+            this.ordinate = ordinate;
+            this.abscissa = abscissa;
+            this.radius = radius;
+            this.circle = document.createElement('div');
+
+            this.circle.style.width = (2 * radius) + 'px';
+            this.circle.style.height = (2 * radius) + 'px';
+            this.circle.style.position = 'absolute';
+            this.circle.style.top = (ordinate - radius) + 'px';
+            this.circle.style.left = (abscissa - radius) + 'px';
+        }
+
+        // Add function drawAtDegrees to Circle - change the position of the element to point from the circle
+        Circle.prototype.drawAtDegrees = function (element, degrees) {
+            var abscissa = this.abscissa + this.radius * Math.cos(degrees * Math.PI / 180)
+            var ordinate = this.ordinate + this.radius * Math.sin(degrees * Math.PI / 180);
+
+            element.style.left = abscissa - parseInt(element.style.width, 10) / 2 + 'px';
+            element.style.top = ordinate - parseInt(element.style.height, 10) / 2 + 'px';
+        }
+
+        // Define object Rectangle and set its properties
+        function Rectangle(ordinate, abscissa, width, height) {
+            this.ordinate = ordinate;
+            this.abscissa = abscissa;
+            this.width = width;
+            this.height = height;
+            this.step = 2 * (this.width + this.height);
+            this.rectangle = document.createElement('div');
+
+            this.rectangle.style.width = width + 'px';
+            this.rectangle.style.height = height + 'px';
+            this.rectangle.style.position = 'absolute';
+            this.rectangle.style.top = ordinate + 'px';
+            this.rectangle.style.left = abscissa + 'px';
+        }
+
+        // Add function drawAtPosition to Rectangle - change the position of the element to point from the rectangle
+        Rectangle.prototype.drawAtPosition = function (element, currentStep) {
+            if (0 <= currentStep && currentStep < this.width) {
+                element.style.left = this.abscissa + currentStep + 'px';
+                element.style.top = this.ordinate + 'px';
+            }
+            else if (this.width <= currentStep && currentStep < this.width + this.height) {
+                element.style.left = this.abscissa + this.width + 'px';
+                element.style.top = this.ordinate + currentStep - this.width + 'px';
+            }
+            else if (this.width + this.height <= currentStep && currentStep < 2 * this.width + this.height) {
+                element.style.left = this.abscissa - currentStep + 2 * this.width + this.height + 'px';
+                element.style.top = this.ordinate + this.height + 'px';
+            }
+            else if (2 * this.width + this.height <= currentStep && currentStep < 2 * (this.width + this.height)) {
+                element.style.left = this.abscissa + 'px';
+                element.style.top = this.ordinate - currentStep + this.step + 'px';
+            }
+        }
+
+        // Create object movingShapes
+        var movingShapes = (function () {
+
+            // Set interval of rotation - if we don't use it the speed of rotation will accelerate
+            var interval;
+            var rotationSpeed = 100;
+
+            // movingShapes.add appens a shepe to object circle or object rectangle
+            function add(figure) {
+
+                // Create shape
+                var div = generateElement();
+
+                // Appand it to circle
+                if (figure === 'ellipse') {
+                    circleDiv.push(div);
+                    var divCount = circleDiv.length;
+                    var circleFragment = document.createDocumentFragment();
+                    circle = new Circle(100, 100, 75);
+                    circleFragment.appendChild(circle.circle);
+
+                    for (var count = 0; count < divCount; count++) {
+                        var degrees = count * 360 / divCount;
+                        circleDiv[count].setAttribute('data-degrees', degrees);
+                        circle.drawAtDegrees(circleDiv[count], degrees);
+                        circleFragment.appendChild(circleDiv[count]);
+                    }
+
+                    document.body.appendChild(circleFragment);
+                }
+                // Appand it to rectangle
+                else if (figure === 'rect') {
+                    rectangleDiv.push(div);
+                    divCount = rectangleDiv.length;
+                    var rectangleFragment = document.createDocumentFragment();
+                    rectangle = new Rectangle(0, 200, 100, 50);
+                    rectangleFragment.appendChild(rectangle.rectangle);
+
+                    for (count = 0; count < divCount; count++) {
+                        var currentStep = count * rectangle.step / divCount;
+                        rectangleDiv[count].setAttribute('data-step', currentStep);
+                        rectangle.drawAtPosition(rectangleDiv[count], currentStep);
+                        rectangleFragment.appendChild(rectangleDiv[count]);
+                    }
+
+                    document.body.appendChild(rectangleFragment);
+                }
+            }
+
+            function rotate() {
+                // Clear interval of rotation - if we don't clear it the speed of rotation will accelerate
+                clearInterval(interval);
+                // Rotate shapes in 100 milliseconds by changing 'data-degrees' and 'data-step' attribute of each one
+                interval = setInterval(function () {
+                    for (var count = 0; count < circleDiv.length; count++) {
+                        var divOne = circleDiv[count];
+                        var degrees = (parseFloat(divOne.getAttribute('data-degrees')) + 1) % 360;
+                        divOne.setAttribute('data-degrees', degrees);
+                        circle.drawAtDegrees(divOne, degrees);
+                        var divTwo = rectangleDiv[count];
+                        var currentStep = (parseFloat(divTwo.getAttribute('data-step')) + 1) % rectangle.step;
+                        divTwo.setAttribute('data-step', currentStep);
+                        rectangle.drawAtPosition(divTwo, currentStep);
+                    }
+                }, rotationSpeed);
+            }
+
+            // Accelerate rotation speed with given milliseconds
+            function accelerate(milliseconds) {
+                rotationSpeed -= milliseconds;
+                rotate();
+            }
+
+            rotate();
+
+            // Module
+            return {
+                add: add,
+                accelerate: accelerate
+            };
+        })();
+
+        // Generates one 'rect' and one 'ellipse' shape and appends them to the document.body
+        function onStartButtonClick() {
+            movingShapes.add('rect');
+            movingShapes.add('ellipse');   
+        }
+
+        // Accelerate speed of rotation of all shapes
+        function onAccelerateButtonClick() {
+            movingShapes.accelerate(10);
+        }
+    </script>
+</body>
+</html>

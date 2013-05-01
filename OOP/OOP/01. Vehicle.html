@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ConsoleModule</title>
+</head>
+<body>
+    <script>
+        // Add property inherit to Function
+        Function.prototype.inherit = function (parent) {
+            this.prototype = new parent();
+            this.prototype.constructor = parent;
+        }
+
+        // Create object of type PropulsionUnit
+        function PropulsionUnit() {
+            this.acceleration = 0;
+        }
+
+        // Create object of type Weel
+        function Weel(radius) {
+            PropulsionUnit.apply(this, arguments);
+            this.radius = radius;
+            this.acceleration = 2 * Math.PI * this.radius;
+        }
+
+        Weel.inherit(PropulsionUnit);
+
+        // Create object of type PropellingNozzle
+        function PropellingNozzle(power) {
+            PropulsionUnit.apply(this, arguments);
+            this.power = power;
+            this.afterburnerSwitch = false;
+            this.acceleration = this.afterburnerSwitch ? 2 * this.power : this.power;
+        }
+
+        PropellingNozzle.inherit(PropulsionUnit);
+
+        // Create object of type Propeller
+        function Propeller(numberFins) {
+            PropulsionUnit.apply(this, arguments);
+            this.numberFins = numberFins;
+            this.spinDirection = true;
+            this.acceleration = this.spinDirection ? this.numberFins : -this.numberFins;
+        }
+
+        Propeller.inherit(PropulsionUnit);
+
+        // Create object of type Vehicle
+        function Vehicle(speed, propulsionUnits) {
+            this.speed = speed;
+            this.propulsionUnits = propulsionUnits;
+        }
+
+        // Add property accelerate to Vehicle
+        Vehicle.prototype.accelerate = function () {
+            var totalAcceleration = 0;
+            var length = this.propulsionUnits.length;
+            for (var count = 0; count < length; count++) {
+                totalAcceleration += this.propulsionUnits[count].acceleration;
+            }
+
+            this.speed += totalAcceleration;
+        }
+
+        // Create object of type LandVehicle
+        function LandVehicle(speed, propulsionUnits) {
+            Vehicle.apply(this, arguments);
+        }
+
+        LandVehicle.inherit(Vehicle);
+
+        // Create object of type AirVehicle
+        function AirVehicle(speed, propulsionUnits) {
+            Vehicle.apply(this, arguments);
+        }
+
+        AirVehicle.inherit(Vehicle);
+
+        // Add property turn to AirVehicle
+        AirVehicle.prototype.turn = function () {
+            if (this.propulsionUnits[0].afterburnerSwitch) {
+                this.propulsionUnits[0].afterburnerSwitch = false;
+            }
+            else {
+                this.propulsionUnits[0].afterburnerSwitch = true;
+            }
+        }
+
+        // Create object of type WaterVehicle
+        function WaterVehicle(speed, propulsionUnits) {
+            Vehicle.apply(this, arguments);
+        }
+
+        WaterVehicle.inherit(Vehicle);
+
+        // Add property changeSpin to WaterVehicle
+        WaterVehicle.prototype.changeSpin = function (position) {
+            if (this.propulsionUnits[position].spinDirection) {
+                this.propulsionUnits[position].spinDirection = false;
+            }
+            else {
+                this.propulsionUnits[position].spinDirection = true;
+            }
+        }
+
+        // Create object of type AmphibiousVehicle
+        function AmphibiousVehicle(speed, landPropulsionUnits, waterPropulsionUnits) {
+            Vehicle.apply(this, arguments);
+            this.terrain = true;
+            this.landPropulsionUnits = landPropulsionUnits;
+            this.waterPropulsionUnits = waterPropulsionUnits;
+            this.propulsionUnits = this.terrain ? this.landPropulsionUnits : this.waterPropulsionUnits;
+        }
+
+        AmphibiousVehicle.inherit(Vehicle);
+
+        // Add property changeTerrain to AmphibiousVehicle
+        AmphibiousVehicle.prototype.changeTerrain = function () {
+            if (this.terrain) {
+                this.terrain = false;
+            }
+            else {
+                this.terrain = true;
+            }
+        }
+    </script>
+</body>
+</html>

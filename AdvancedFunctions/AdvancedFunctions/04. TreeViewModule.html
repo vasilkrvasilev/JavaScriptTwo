@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TreeViewModule</title>
+</head>
+<body>
+    <script>
+        // Show and hide sub list
+        function revealSubList(event) {
+            // Check if the element has child ul
+            if (typeof this.getElementsByTagName('ul')[0] == 'undefined') {
+                return;
+            }
+            // Change the property style.display to show or hide sub list 
+            // Use this === event.target, because if we click on one li item the event will affect the parent as well
+            if (this === event.target && this.getElementsByTagName('ul')[0].style.display == 'block') {
+                this.getElementsByTagName('ul')[0].style.display = 'none';
+            } else {
+                this.getElementsByTagName('ul')[0].style.display = 'block';
+            }
+        }
+
+        // Add property addNode to HTMLElement
+        HTMLElement.prototype.addNode = function () {
+            var collection = this.getElementsByTagName('ul');
+
+            // Append list with first element
+            if (collection.length > 0) {
+                var item = document.createElement('li');
+                item.addEventListener('click', revealSubList);
+                collection[0].appendChild(item);
+                return item;
+            }
+            // Append list with new element to list
+            else {
+                var element = document.createElement('ul');
+                var item = document.createElement('li');
+                item.addEventListener('click', revealSubList);
+                element.appendChild(item);
+                this.appendChild(element);
+                return item;
+            }
+        }
+
+        // Add property content to HTMLElement, which appends button to it
+        HTMLElement.prototype.content = function (text) {
+            var button = document.createElement('a');
+            button.href = '#';
+            button.innerHTML = text;
+            button.addEventListener('click', revealSubList);
+            this.appendChild(button);
+        }
+
+        // Create object controls
+        var controls = (function () {
+
+            // controls.treeView create element to wrap a tree view
+            function treeView(input) {
+                var data = input.split('.');
+                var element = document.createElement(data[0]);
+                element.className = data[1];
+                document.body.appendChild(element);
+                return element;
+            }
+
+            // Module
+            return {
+                treeView: treeView
+            };
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\AdvancedFunctions\AdvancedFunctions\bin\AdvancedFunctions.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\AdvancedFunctions\AdvancedFunctions\bin\AdvancedFunctions.pdb
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\AdvancedFunctions\AdvancedFunctions\obj\Debug\AdvancedFunctions.csprojResolveAssemblyReference.cache
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\AdvancedFunctions\AdvancedFunctions\obj\Debug\AdvancedFunctions.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\AdvancedFunctions\AdvancedFunctions\obj\Debug\AdvancedFunctions.pdb

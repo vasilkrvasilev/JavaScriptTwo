@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>DOMModule</title>
+</head>
+<body>
+    <script>
+        // Create object domModule
+        var domModule = (function() {
+            var buffer = document.createDocumentFragment();
+
+            // domModule.appendChild appends element to all elements from the page with given selector
+            function appendChild(element, selector) {
+                var collection = document.querySelectorAll(selector);
+                for (var count = 0; count < collection.length; count++) {
+                    collection[count].appendChild(element);
+                }
+            }
+
+            // domModule.removeChild removes all element with given elementSelector 
+            // from all elements in the page with given selector
+            function removeChild(selector, elementSelector) {
+                var collection = document.querySelectorAll(selector);
+                for (var count = 0; count < collection.length; count++) {
+                    var elementCollection = collection[count].querySelectorAll(elementSelector);
+                    for (var position = 0; position < elementCollection.length; position++) {
+                        collection[count].removeChild(elementCollection[position]);
+                    }
+                }
+            }
+
+            // domModule.addHandler adds given type of event with given fnuction
+            // to all elements in the page with given selector 
+            function addHandler(selector, ev, func) {
+                var collection = document.querySelectorAll(selector);
+                for (var count = 0; count < collection.length; count++) {
+                    collection[count]['on' + ev] = func;
+                }
+            }
+
+            // domModule.appendToBuffer adds element with given selector to a buffer
+            // and append the elements with same selector when their number reaches 100
+            function appendToBuffer(selector, element) {
+                buffer.appendChild(element);
+                var collection = buffer.querySelectorAll(selector);
+                if (collection.length === 100) {
+                    for (var count = 0; count < 100; count++) {
+                        document.body.appendChild(collection[count]);
+                        buffer.removeChild(collection[count]);
+                    }
+                }
+            }
+
+            // domModule.getElement gets all elements in the page with given selector
+            function getElement(selector) {
+                var collection = document.querySelectorAll(selector);
+                return collection;
+            }
+
+            // Module
+            return {
+                appendChild: appendChild,
+                removeChild: removeChild,
+                addHandler: addHandler,
+                appendToBuffer: appendToBuffer,
+                getElement: getElement
+            };
+        })();
+    </script>
+</body>
+</html>
