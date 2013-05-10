@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Circle</title>
+</head>
+<body>
+    <canvas id="canvas-house" width="500" height="300">
+		Canvas is not supported
+	</canvas>
+	<script type="text/javascript">
+	    function drawCircle(x, y, radius) {
+	        var ctx = document.getElementsByTagName('canvas')[0].getContext('2d');
+	        ctx.lineWidth = 2;
+	        ctx.strokeStyle = 'blue';
+	        ctx.fillStyle = 'white';
+	        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	        ctx.strokeRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+	        ctx.fillStyle = 'black';
+	        ctx.beginPath();
+	        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+	        ctx.fill();
+	    }
+
+	    (function () {
+	        var x = 0;
+	        var y = 0;
+	        var radius = 10;
+	        var direction = { x: 1, y: 1 };
+	        var rows = document.getElementsByTagName('canvas')[0].height;
+	        var columns = document.getElementsByTagName('canvas')[0].width;
+	        setInterval(function () {
+	            x += direction.x;
+	            y += direction.y;
+	            if (x >= columns) {
+	                direction.x = -1;
+	            }
+	            if (x <= 0) {
+	                direction.x = 1;
+	            }
+	            if (y >= rows) {
+	                direction.y = -1;
+	            }
+	            if (y <= 0) {
+	                direction.y = 1;
+	            }
+	            drawCircle(x, y, radius);
+	        }, 10);
+	    }());
+	</script>
+</body>
+</html>

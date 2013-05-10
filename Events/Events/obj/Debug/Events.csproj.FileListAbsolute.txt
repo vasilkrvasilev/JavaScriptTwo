@@ -1,0 +1,5 @@
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Events\Events\bin\Events.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Events\Events\bin\Events.pdb
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Events\Events\obj\Debug\Events.csprojResolveAssemblyReference.cache
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Events\Events\obj\Debug\Events.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Events\Events\obj\Debug\Events.pdb

@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>LocalSessionStorage</title>
+</head>
+<body>
+    <script>
+        // Help methods for saving/loading cookies
+        var cookies = (function () {
+            if (!String.prototype.startsWith) {
+                String.prototype.startsWith = function (text) {
+                    if (this.length < text.length) {
+                        return false;
+                    }
+                    for (var count = 0; count < text.length; count++) {
+                        if (this[count] !== text[count]) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            function readCookie(input) {
+                var value = document.cookie;
+                var start = value.indexOf(" " + input + "=");
+                if (start == -1) {
+                    start = value.indexOf(input + "=");
+                }
+                if (start == -1) {
+                    value = null;
+                }
+                else {
+                    start = value.indexOf("=", start) + 1;
+                    var end = value.indexOf(";", start);
+                    if (end == -1) {
+                        end = value.length;
+                    }
+                    value = unescape(value.substring(start, end));
+                }
+                return value;
+            }
+
+            function createCookie(input, value, exdays) {
+                var exdate = new Date();
+                exdate.setDate(exdate.getDate() + exdays);
+                var value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
+                document.cookie = input + "=" + value;
+            }
+
+            function removeCookie(name) {
+                createCookie(name, "", -1);
+            }
+
+            function getCookies() {
+                var pairs = document.cookie.split(";");
+                var cookies = new Array();
+                for (var i = 0; i < pairs.length; i++) {
+                    var pair = pairs[i].split("=");
+                    cookies.push({ name: pair[0], value: pair[1] });
+                }
+
+                return cookies;
+            }
+
+            return {
+                read: readCookie,
+                create: createCookie,
+                remove: removeCookie,
+                getCookies: getCookies
+            };
+        }());
+
+        // Fake localStorage that uses cookies
+        var myLocalStorage = (function () {
+            var prefix = "myLocalStorage";
+
+            function setItem(key, value) {
+                cookies.create(prefix + key, value);
+            }
+
+            function getItem(key) {
+                return cookies.read(prefix + key);
+            }
+
+            function removeItem(key) {
+                cookies.remove(prefix + key);
+            }
+
+            function clear() {
+                var collection = cookies.getCookies();
+                for (var count = 0; count < collection.length; count++) {
+                    var name = collection[count].name;
+
+                    if (name.indexOf(prefix) != -1) {
+                        cookies.remove(name);
+                    }
+                }
+            }
+
+            function getKey(index) {
+                var collection = cookies.getCookies();
+                if (index < collection.length) {
+                    var key = collection[index].name.toString().replace(prefix, "").trim();
+                    return key;
+                }
+            }
+
+            function calculateLength() {
+                var length = 0;
+                var collection = cookies.getCookies();
+                for (var count = 0; count < collection.length; count++) {
+                    var name = collection[count].name;
+
+                    if (name.indexOf(prefix) != -1) {
+                        length++;
+                    }
+                }
+
+                return length;
+            }
+
+            return {
+                setItem: setItem,
+                getItem: getItem,
+                removeItem: removeItem,
+                clear: clear,
+                key: getKey,
+                length: calculateLength
+            };
+        })();
+
+        // Fake sessionStorage that uses inner array
+        var mySessionStorage = (function () {
+            var data = {};
+
+            function setItem(key, value) {
+                data[key] = value.toString();
+            }
+
+            function getItem(key) {
+                return data[key];
+            }
+
+            function removeItem(key) {
+                delete data[key];
+            }
+
+            function clear() {
+                data = {};
+            }
+
+            function getKey(index) {
+                var count = 0;
+                for (var element in data) {
+                    if (count == index) {
+                        return element;
+                    }
+
+                    count++;
+                }
+            }
+
+            function calculateLength() {
+                var length = 0;
+
+                for (var count in data) {
+                    length++;
+                }
+
+                return length;
+            }
+
+            return {
+                setItem: setItem,
+                getItem: getItem,
+                removeItem: removeItem,
+                clear: clear,
+                key: getKey,
+                length: calculateLength
+            };
+        })();
+    </script>
+</body>
+</html>

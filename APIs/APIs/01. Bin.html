@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Bin</title>
+    <script>
+        // Set style properties to trash zone (container) and trash elements
+        function addTrash() {
+            var container = document.getElementById("container");
+            container.style.cssFloat = "right";
+            container.style.width = screen.width / 4 + "px";
+            container.style.height = screen.height + "px";
+
+            for (var count = 0; count < 10; count++) {
+                var element = generateElement(count);
+                container.appendChild(element);
+            }
+        }
+
+        // Generate element (trash) and set its style properties
+        function generateElement(count) {
+            var element = document.createElement('img');
+            element.id = 'item' + count;
+            element.style.width = generateNumber(30, 100) + 'px';
+            element.style.height = generateNumber(30, 100) + 'px';
+            element.style.position = 'absolute';
+            element.style.top = generateNumber(0, screen.height / 2) + 'px';
+            element.style.left = generateNumber(screen.width / 4, screen.width / 2) + 'px';
+            element.setAttribute('draggable', 'true');
+            element.src = 'scripts/can.jpg';
+            element.addEventListener('dragstart', drag, false);
+
+            return element;
+        }
+
+        // Generate random number in the interval [downLimit, upperLimit]
+        function generateNumber(downLimit, upperLimit) {
+            var number = 0;
+            if (downLimit === 0) {
+                number = Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+            else if (downLimit === 1) {
+                number = Math.floor((Math.random() * parseInt(upperLimit)) + 1);
+            }
+            else {
+                number = downLimit + Math.floor(Math.random() * (parseInt(upperLimit) + 1));
+            }
+
+            return number;
+        }
+
+        // Define event function for the bin (change the image)
+        function changeState(state) {
+            var img = document.getElementById('bin');
+            img.src = "scripts/" + state + "-bin.jpg";
+        }
+
+        // Define event function for the bin wrapper ondragover
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        // Define event function for the bin wrapper ondrop (remove element (trash) from trash zone (container))
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("dragged-id");
+            var elementToRemove = document.getElementById(data);
+            container.removeChild(elementToRemove);
+        }
+
+        // Define event function for the trash elements ondrag (mark them as dragged)
+        function drag(ev) {
+            ev.dataTransfer.setData("dragged-id", ev.target.id);
+        }
+    </script>
+</head>
+<body onload="addTrash()">
+    <div id="binWrapper" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <img id="bin" src="scripts/closed-bin.jpg" ondragover="changeState('open')" onmouseout="changeState('closed')"/></div>
+    <div id="container"></div>
+</body>
+</html>
