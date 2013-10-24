@@ -1,0 +1,5 @@
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Exam\Exam\bin\Exam.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Exam\Exam\bin\Exam.pdb
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Exam\Exam\obj\Debug\Exam.csprojResolveAssemblyReference.cache
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Exam\Exam\obj\Debug\Exam.dll
+C:\Users\Vasko\Desktop\Projects JavaScript\PartTwo\Exam\Exam\obj\Debug\Exam.pdb

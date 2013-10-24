@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <div id="gridView-holder"></div>
+    <div id="copied-gridView-holder"></div>
+
+  <script type="text/javascript">
+      var controls = (function () {
+
+          function GridView(selector) {
+
+              var gridView = document.createElement('table');
+              var headerItems = [];
+              var rows = [];
+
+              var gridViewItem = document.querySelector(selector);
+              gridViewItem.appendChild(gridView);
+
+              gridViewItem.addEventListener("click",
+                function (ev) {
+                    if (!ev) {
+                        ev = window.event;
+                    }
+                    ev.stopPropagation();
+                    ev.preventDefault();
+
+                    var clickedItem = ev.target;
+                    if (!(clickedItem instanceof HTMLTableRowElement)) {
+                        return;
+                    }
+
+                    //hidePrev(clickedItem.parentNode);
+                    //hideNext(clickedItem.parentNode);
+
+                    var sublist = clickedItem.getElementsByTagName('tr');
+
+                    if (sublist.length > 0) {
+                        if (sublist[0].style.display === 'none') {
+                            sublist[0].style.display === '';
+                        }
+                        else {
+                            sublist[0].style.display === 'none';
+                        }
+                    }
+                }, false);
+
+
+              this.addHeader = function () {
+                  var length = arguments.length;
+                  for (var count = 0; count < length; count++) {
+                      headerItems[count] = arguments[count];
+                  }
+
+                  return this;
+              }
+
+              this.addRow = function () {
+                  var newRow = new Row(arguments);
+                  rows.push(newRow);
+                  return newRow;
+              }
+
+
+              this.render = function () {
+                  var collection = gridViewItem.getElementsByTagName('thead');
+                  if (collection.length > 0) {
+                      gridViewItem.firstElementChild.removeChild(gridViewItem.getElementsByTagName('thead')[0]);
+                  }
+
+                  var length = headerItems.length;
+                  var tableHeader = document.createElement('thead');
+                  var headerRow = document.createElement('tr');
+                  for (var count = 0; count < length; count++) {
+                      var data = document.createElement('td');
+                      data.innerHTML = headerItems[count];
+                      headerRow.appendChild(data);
+                  }
+
+                  tableHeader.appendChild(headerRow);
+                  gridView.appendChild(tableHeader);
+
+                  collection = gridViewItem.getElementsByTagName('tbody');
+                  if (collection.length > 0) {
+                      gridViewItem.firstElementChild.removeChild(gridViewItem.getElementsByTagName('tbody')[0]);
+                  }
+
+                  var tableBody = document.createElement('tbody');
+                  for (var currentRow = 0; currentRow < rows.length; currentRow++) {
+                      var bodyRow = rows[currentRow].render();
+
+                      tableBody.appendChild(bodyRow.rowItem);
+                  }
+
+                  gridView.appendChild(tableBody);
+
+                  return this;
+              }
+      }
+
+          function Row(arguments) {
+
+              var rowItems = [];
+              var length = arguments.length;
+              for (var count = 0; count < length; count++) {
+                  rowItems[count] = arguments[count];
+              }
+
+              this.rowItem = document.createElement('tr');
+              this.nestedHeaderItems = [];
+              this.nestedRows = [];
+
+              this.addHeader = function () {
+                  var length = arguments.length;
+                  for (var count = 0; count < length; count++) {
+                      this.nestedHeaderItems[count] = arguments[count];
+                  }
+
+                  return this;
+              }
+
+              this.addRow = function () {
+                  var length = arguments.length;
+                  var row = [];
+                  for (var count = 0; count < length; count++) {
+                      row[count] = arguments[count];
+                  }
+
+                  this.nestedRows.push(row);
+                  return this;
+              }
+              
+              this.getNestedGridView = function () {
+                  return this;
+              }
+
+                this.render = function () {
+                    for (var count = 0; count < rowItems.length; count++) {
+                        var data = document.createElement('td');
+                        data.innerHTML = rowItems[count];
+                        this.rowItem.appendChild(data);
+                    }
+
+                    var collection = this.rowItem.getElementsByTagName('table');
+                    if (collection.length > 0) {
+                        this.rowItem.removeChild(collection[0]);
+                    }
+
+                    var nestedGridView = document.createElement('table');
+                    var length = this.nestedHeaderItems.length;
+                    var tableHeader = document.createElement('thead');
+                    var headerRow = document.createElement('tr');
+                    for (var count = 0; count < length; count++) {
+                        var data = document.createElement('td');
+                        data.innerHTML = this.nestedHeaderItems[count];
+                        headerRow.appendChild(data);
+                    }
+
+                    tableHeader.appendChild(headerRow);
+                    nestedGridView.appendChild(tableHeader);
+
+                    var tableBody = document.createElement('tbody');
+                    for (var currentRow = 0; currentRow < this.nestedRows.length; currentRow++) {
+
+                        var bodyRow = document.createElement('tr');
+                        for (var count = 0; count < length; count++) {
+                            var data = document.createElement('td');
+                            data.innerHTML = this.nestedRows[currentRow][count];
+                            bodyRow.appendChild(data);
+                        }
+
+                        tableBody.appendChild(bodyRow);
+                    }
+
+                    nestedGridView.appendChild(tableBody);
+                    nestedGridView.style.display = 'none';
+                    var data = document.createElement('tr');
+                    //data.style.display = 'none';
+                    data.appendChild(nestedGridView);
+                    this.rowItem.appendChild(data);
+
+                    return this;
+              }
+
+          }
+
+
+
+
+          return {
+              getGridView: function (selector) {
+                  return new GridView(selector);
+              }
+          }
+
+
+
+
+      }());
+
+
+
+      // Only schoolGrid has render - it is obligatory for both tests
+      // First task test
+      var schoolGrid = controls.getGridView('#gridView-holder');
+      schoolGrid.addHeader('Name', 'Location', 'Specialty');
+      schoolGrid.addRow('PMG', 'Burgas', 'Math');
+      var row = schoolGrid.addRow('TUES', 'Sofia', 'IT');
+      // Second task test
+      var grid = row.getNestedGridView();
+      grid.addHeader('Title', 'Students');
+      grid.addRow('JS', '400');
+      grid.addRow('SEO', '1000');
+
+      schoolGrid.render();
+
+
+  </script>
+</body>
+</html>
